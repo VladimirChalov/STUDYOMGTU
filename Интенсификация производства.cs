@@ -1,27 +1,28 @@
-﻿using System;
+using System;
 using System.Data;
 namespace Omgtu
 {
     class Program
     {
-         static void Main()
+        static void Main()
         {
-            Console.WriteLine("Введите дату начала производства (Месяц, День, Год):");
-            Console.Write("Месяц:");
-            int month1 = int.Parse(Console.ReadLine());
+            Console.WriteLine("Введите дату начала производства (День, Месяц, Год):");
             Console.Write("День: ");
             int day1 = int.Parse(Console.ReadLine());
+            Console.Write("Месяц:");
+            int month1 = int.Parse(Console.ReadLine());
             Console.Write("Год: ");
             int year1 = int.Parse(Console.ReadLine());
             DateTime dt = new DateTime(year1, month1, day1);//Формируем дату начала производтва на основе DateTime
 
-            Console.WriteLine("Введите дату конца  производства (Год, Число, Месяц):");
-            Console.Write("Месяц:");
-            int month2 = int.Parse(Console.ReadLine());
+            Console.WriteLine("Введите дату конца  производства (День, Месяц, Год):");
             Console.Write("День: ");
             int day2 = int.Parse(Console.ReadLine());
+            Console.Write("Месяц:");
+            int month2 = int.Parse(Console.ReadLine());
             Console.Write("Год: ");
             int year2 = int.Parse(Console.ReadLine());
+
             DateTime endDt = new DateTime(year2, month2, day2);//Формируем дату конца производтва на основе DateTime
 
 
