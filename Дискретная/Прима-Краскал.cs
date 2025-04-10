@@ -50,7 +50,7 @@ namespace Omgtu
             parent[x] = y;
         }
 
-        public void Prima_Kruskal()
+        public void Prim()
         {
             Edges.Sort();
 
@@ -68,7 +68,7 @@ namespace Omgtu
                 int x = Find(parent, edge.Source);
                 int y = Find(parent, edge.Destination);
 
-                // Если корни разные, значит добавляем ребро в MST
+
                 if (x != y)
                 {
                     minimumCost += edge.Weight;
@@ -97,7 +97,7 @@ namespace Omgtu
             g.AddEdge(1, 3, 15);
             g.AddEdge(2, 3, 4);
 
-            g.Prima_Kruskal();
+            g.Prim();
         }
     }
 }
