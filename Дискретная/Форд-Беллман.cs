@@ -49,7 +49,7 @@ namespace Omgtu
                 }
             }
 
-            PrintDistances(dist); // Изменили здесь, чтобы вызывать новый метод
+            PrintDistances(dist);
         }
 
         public void PrintDistances(int[] dist)
