@@ -1,0 +1,25 @@
+using System;
+namespace Omgtu
+{
+class Program
+{
+    static void Main()
+    {
+        Func<double, double, string> suma = (x, y) => (x + y).ToString();
+        Func<double, double, string> minus = (x, y) => (x - y).ToString();
+        Func<double, double, string> umn = (x, y) => (x * y).ToString();
+        Func<double, double, string> del = (x, y) =>
+        {
+            if (y != 0)
+                return (x / y).ToString();
+            else
+                return "деление невозможно";
+        };
+
+        Console.WriteLine(suma(10.5, 4.5)); 
+        Console.WriteLine(minus(20, 7));         
+        Console.WriteLine(umn(3, 8));       
+        Console.WriteLine(del(9, 0));        
+    }
+}
+}
