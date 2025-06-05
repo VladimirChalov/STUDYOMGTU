@@ -1,0 +1,168 @@
+using System;
+using System.Collections.Generic;
+
+class LittleAlgorithm
+{
+    private const double Infinity = double.PositiveInfinity;
+
+    static (double[,], double) ReduceMatrix(double[,] matrix)
+    {
+        int size = matrix.GetLength(0);
+        double totalReduction = 0;
+        double[,] reducedMatrix = (double[,])matrix.Clone();
+
+        for (int row = 0; row < size; row++)
+        {
+            double minInRow = Infinity;
+            
+            for (int col = 0; col < size; col++)
+            {
+                if (reducedMatrix[row, col] < minInRow)
+                    minInRow = reducedMatrix[row, col];
+            }
+
+            if (double.IsInfinity(minInRow) || minInRow == 0) continue;
+
+            for (int col = 0; col < size; col++)
+            {
+                if (!double.IsInfinity(reducedMatrix[row, col]))
+                    reducedMatrix[row, col] -= minInRow;
+            }
+            totalReduction += minInRow;
+        }
+
+        for (int col = 0; col < size; col++)
+        {
+            double minInCol = Infinity;
+            
+            for (int row = 0; row < size; row++)
+            {
+                if (reducedMatrix[row, col] < minInCol)
+                    minInCol = reducedMatrix[row, col];
+            }
+
+            if (double.IsInfinity(minInCol) || minInCol == 0) continue;
+
+            for (int row = 0; row < size; row++)
+            {
+                if (!double.IsInfinity(reducedMatrix[row, col]))
+                    reducedMatrix[row, col] -= minInCol;
+            }
+            totalReduction += minInCol;
+        }
+
+        return (reducedMatrix, totalReduction);
+    }
+
+    static (int, int, double) FindMaxPenaltyZero(double[,] matrix)
+    {
+        int size = matrix.GetLength(0);
+        double maxPenalty = double.NegativeInfinity;
+        int selectedRow = -1, selectedCol = -1;
+
+        for (int row = 0; row < size; row++)
+        {
+            for (int col = 0; col < size; col++)
+            {
+                if (matrix[row, col] == 0)
+                {
+                    double minInRow = Infinity;
+                    for (int k = 0; k < size; k++)
+                    {
+                        if (k != col && !double.IsInfinity(matrix[row, k]) && matrix[row, k] < minInRow)
+                            minInRow = matrix[row, k];
+                    }
+                    if (double.IsInfinity(minInRow)) minInRow = 0;
+
+                    double minInCol = Infinity;
+                    for (int k = 0; k < size; k++)
+                    {
+                        if (k != row && !double.IsInfinity(matrix[k, col]) && matrix[k, col] < minInCol)
+                            minInCol = matrix[k, col];
+                    }
+                    if (double.IsInfinity(minInCol)) minInCol = 0;
+
+                    double penalty = minInRow + minInCol;
+                    if (penalty > maxPenalty)
+                    {
+                        maxPenalty = penalty;
+                        selectedRow = row;
+                        selectedCol = col;
+                    }
+                }
+            }
+        }
+
+        return (selectedRow, selectedCol, maxPenalty);
+    }
+
+    static double SolveTSP(double[,] initialMatrix)
+    {
+        int size = initialMatrix.GetLength(0);
+        double minTourCost = Infinity;
+
+        var stack = new Stack<(double[,], double, int)>();
+        
+        var (reducedMatrix, lowerBound) = ReduceMatrix(initialMatrix);
+        stack.Push((reducedMatrix, lowerBound, 0));
+
+        while (stack.Count > 0)
+        {
+            var (currentMatrix, currentBound, level) = stack.Pop();
+
+            if (level == size - 1)
+            {
+                minTourCost = Math.Min(minTourCost, currentBound);
+                continue;
+            }
+
+            var (row, col, penalty) = FindMaxPenaltyZero(currentMatrix);
+
+            if (row == -1 || col == -1) continue;
+
+            double[,] newMatrix = (double[,])currentMatrix.Clone();
+
+            for (int k = 0; k < size; k++)
+            {
+                newMatrix[row, k] = Infinity;
+                newMatrix[k, col] = Infinity;
+            }
+            newMatrix[col, row] = Infinity;
+
+            var (reducedNewMatrix, additionalCost) = ReduceMatrix(newMatrix);
+            double newBound = currentBound + additionalCost;
+
+            if (newBound < minTourCost)
+                stack.Push((reducedNewMatrix, newBound, level + 1));
+        }
+
+        return minTourCost;
+    }
+
+    static void Main()
+    {
+        double[,] costMatrix = 
+        {
+            { Infinity, 27, 43, 16, 30, 26 },
+            { 7, Infinity, 16, 1, 30, 25 },
+            { 20, 13, Infinity, 35, 5, 0 },
+            { 21, 16, 25, Infinity, 18, 18 },
+            { 12, 46, 27, 48, Infinity, 5 },
+            { 23, 5, 5, 9, 5, Infinity }
+        };
+
+        double result = SolveTSP(costMatrix);
+        Console.WriteLine($"Min tour cost: {result}");
+
+        double[,] smallGraph = 
+        {
+            { Infinity, 3, 5, 7 },
+            { 3, Infinity, 6, 4 },
+            { 5, 6, Infinity, 2 },
+            { 7, 4, 2, Infinity }
+        };
+
+        result = SolveTSP(smallGraph);
+        Console.WriteLine($"Min tour cost: {result}");
+    }
+}
